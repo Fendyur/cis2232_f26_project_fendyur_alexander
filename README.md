@@ -15,20 +15,50 @@ Steel Blue
 
 ### Fields
 Name:	(Data Type)	Description
+
+
 id:	(int)	Unique Identifier 
+
+
 groupNum:	(int)	How many people are attending
+
+
 isBirthday:	(bool)	Is it someone’s birthday decoration and cake cost
+
+
 equipmentNeeded:	(bool)	Do they need equipment
+
+
 roomType:	(String)	Room type(party room, gym, small rec room)
+
+
 bookingDate:	(String)	Date of the booking (yyyy-mm-dd)
+
+
 startTime:	(String)	Booking start time
+
+
 endTime:	(String)	Booking end time
+
+
 bookingName:	(String)	Name for the booking
+
+
 phone:	(String)	Phone number for the booking
+
+
 email:	(String)	Email information for the booking
+
+
 basePrice:	(double)	Cost of the room
+
+
 tax:	(double)	Standard tax fee (15%)
+
+
 totalPrice:	(double)	The price for what has been booked
+
+
 birthdayCost:	(double)	Birthday cost
 
 ### Calculation
