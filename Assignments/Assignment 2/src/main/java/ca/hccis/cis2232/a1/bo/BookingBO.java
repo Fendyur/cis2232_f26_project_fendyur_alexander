@@ -17,7 +17,23 @@ public class BookingBO {
      * @return the total cost including tax
      */
     public static double calculate(Booking booking) {
-        double total = 150 * 1.15;
+        double basePrice;
+        if (booking.getRoomType().equals("Party Room")) {
+            basePrice = 200;
+        } else {
+            basePrice = 150;
+        }
+        booking.setBasePrice(basePrice);
+
+        double subTotal = basePrice;
+        if (booking.isBirthday()) {
+            subTotal += 50;
+        }
+        if (booking.isEquipmentNeeded()) {
+            subTotal += 25;
+        }
+
+        double total = subTotal * 1.15;
         booking.setTotalPrice(total);
         return total;
     }
