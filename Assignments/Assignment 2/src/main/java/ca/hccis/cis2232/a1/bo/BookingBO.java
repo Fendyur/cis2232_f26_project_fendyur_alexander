@@ -14,11 +14,15 @@ public class BookingBO {
     public static final String ROOM_PARTY = "Party Room";
     /** Room type name for the gym. */
     public static final String ROOM_GYM = "Gym";
+    /** Room type name for the small rec room. */
+    public static final String ROOM_SMALL_REC = "Small Rec Room";
 
     /** Base price of the party room. */
     public static final double PRICE_PARTY_ROOM = 200.00;
     /** Base price of the gym. */
     public static final double PRICE_GYM = 150.00;
+    /** Base price of the small rec room. */
+    public static final double PRICE_SMALL_REC_ROOM = 100.00;
 
     /** Flat cost added when the booking is a birthday (decorations and cake). */
     public static final double BIRTHDAY_COST = 50.00;
@@ -30,8 +34,8 @@ public class BookingBO {
     /**
      * Calculate the total cost of a booking. The room's base price is looked
      * up from its room type, the birthday and equipment costs are added if
-     * requested, then tax is applied. The base price and total are also
-     * stored on the booking.
+     * requested, then tax is applied. The base price, birthday cost and
+     * total are also stored on the booking.
      *
      * @param booking the booking to price
      * @return the total cost including tax
@@ -47,10 +51,10 @@ public class BookingBO {
         double basePrice = getRoomPrice(booking.getRoomType());
         booking.setBasePrice(basePrice);
 
-        double subTotal = basePrice;
-        if (booking.isBirthday()) {
-            subTotal += BIRTHDAY_COST;
-        }
+        double birthdayCost = booking.isBirthday() ? BIRTHDAY_COST : 0.0;
+        booking.setBirthdayCost(birthdayCost);
+
+        double subTotal = basePrice + birthdayCost;
         if (booking.isEquipmentNeeded()) {
             subTotal += EQUIPMENT_COST;
         }
@@ -61,7 +65,8 @@ public class BookingBO {
     }
 
     /**
-     * Look up the base price for a room type.
+     * Look up the base price for a room type. Matching ignores case and
+     * surrounding spaces.
      *
      * @param roomType the room type name
      * @return the base price of the room
@@ -70,10 +75,13 @@ public class BookingBO {
      * @since 2/10/2026
      */
     private static double getRoomPrice(String roomType) {
-        if (ROOM_PARTY.equals(roomType)) {
+        String room = roomType == null ? "" : roomType.trim();
+        if (ROOM_PARTY.equalsIgnoreCase(room)) {
             return PRICE_PARTY_ROOM;
-        } else if (ROOM_GYM.equals(roomType)) {
+        } else if (ROOM_GYM.equalsIgnoreCase(room)) {
             return PRICE_GYM;
+        } else if (ROOM_SMALL_REC.equalsIgnoreCase(room)) {
+            return PRICE_SMALL_REC_ROOM;
         }
         throw new IllegalArgumentException("Unknown room type: " + roomType);
     }

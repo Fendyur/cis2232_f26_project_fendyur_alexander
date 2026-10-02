@@ -162,5 +162,4 @@ class BookingBOAITest {
                 () -> BookingBO.calculate(null));
         assertNotNull(e.getMessage());
     }
-
 }
