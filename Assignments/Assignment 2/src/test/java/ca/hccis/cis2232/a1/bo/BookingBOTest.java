@@ -4,6 +4,7 @@ import ca.hccis.cis2232.a1.data.Booking;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Unit tests for BookingBO.calculate, written test first.
@@ -29,5 +30,26 @@ class BookingBOTest {
         double actual = BookingBO.calculate(booking);
 
         assertEquals(172.50, actual, DELTA);
+    }
+
+    /**
+     * A party room birthday booking with equipment adds both extras to the
+     * room price before tax, and records the base price on the booking.
+     * <p>
+     * Created following a Test Driven Development approach: test written
+     * first (red), minimal code to pass (green), then refactored.
+     */
+    @Test
+    void calculate_partyRoomBirthdayWithEquipment_addsExtrasBeforeTax() {
+        Booking booking = new Booking();
+        booking.setRoomType("Party Room");
+        booking.setBirthday(true);
+        booking.setEquipmentNeeded(true);
+
+        double actual = BookingBO.calculate(booking);
+
+        assertEquals(316.25, actual, DELTA);
+        assertEquals(200.00, booking.getBasePrice(), DELTA);
+        assertTrue(actual > booking.getBasePrice());
     }
 }
