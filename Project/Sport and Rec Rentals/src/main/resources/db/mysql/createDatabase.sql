@@ -4,9 +4,9 @@
 # use bjmac_squash_skills_w26;
 
 #For localhost
-DROP DATABASE IF EXISTS cis2232_squash_scorer;
-CREATE DATABASE cis2232_squash_scorer;
-use cis2232_squash_scorer;
+DROP DATABASE IF EXISTS cis2232_sport_and_rec_rentals;
+CREATE DATABASE cis2232_sport_and_rec_rentals;
+use cis2232_sport_and_rec_rentals;
 
 -- ------------------------------------------------------------------------------
 -- Note the table below to hold data associated with your project.  Expect one
