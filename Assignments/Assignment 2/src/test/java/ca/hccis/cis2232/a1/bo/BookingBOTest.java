@@ -4,6 +4,7 @@ import ca.hccis.cis2232.a1.data.Booking;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -51,5 +52,21 @@ class BookingBOTest {
         assertEquals(316.25, actual, DELTA);
         assertEquals(200.00, booking.getBasePrice(), DELTA);
         assertTrue(actual > booking.getBasePrice());
+    }
+
+    /**
+     * An unknown room type or a missing booking cannot be priced, so the
+     * method rejects them instead of returning a wrong total.
+     * <p>
+     * Created following a Test Driven Development approach: test written
+     * first (red), minimal code to pass (green), then refactored.
+     */
+    @Test
+    void calculate_invalidInput_throwsIllegalArgumentException() {
+        Booking booking = new Booking();
+        booking.setRoomType("Hot Tub");
+
+        assertThrows(IllegalArgumentException.class, () -> BookingBO.calculate(booking));
+        assertThrows(IllegalArgumentException.class, () -> BookingBO.calculate(null));
     }
 }
