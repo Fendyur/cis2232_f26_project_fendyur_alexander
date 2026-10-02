@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * Unit tests for BookingBO.calculate, written test first.
  *
  * @author Alexander Fendyur
+ * @author Claude (AI)
  * @since 2/10/2026
  */
 class BookingBOTest {

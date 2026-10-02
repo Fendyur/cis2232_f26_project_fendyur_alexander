@@ -23,7 +23,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * (room price, equipment rental and birthday add-ons, 15% tax) and the
  * Booking entity class.
  *
- * @author Claude (AI generated), reviewed by Alexander Fendyur
+ * @author Claude (AI generated)
+ * @author Alexander Fendyur (reviewer)
  * @since 2/10/2026
  */
 class BookingBOAITest {
