@@ -17,6 +17,8 @@ public class BookingBO {
      * @return the total cost including tax
      */
     public static double calculate(Booking booking) {
-        return 0;
+        double total = 150 * 1.15;
+        booking.setTotalPrice(total);
+        return total;
     }
 }
