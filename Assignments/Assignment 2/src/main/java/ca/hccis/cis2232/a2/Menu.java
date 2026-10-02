@@ -1,12 +1,13 @@
 package ca.hccis.cis2232.a2;
 
 import ca.hccis.cis2232.a2.bo.BookingBO;
+import ca.hccis.cis2232.a2.bo.BookingValidationBO;
 import ca.hccis.cis2232.a2.data.Booking;
 import ca.hccis.cis2232.a2.util.BookingDataOptions;
 import ca.hccis.cis2232.a2.util.MenuOptions;
 
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Scanner;
 
 
 /**
@@ -16,7 +17,6 @@ import java.util.Scanner;
  * @since 27/9/2026
  */
 public class Menu {
-    Scanner input = new Scanner(System.in);
     private static final String[] ROOM_TYPES = {BookingBO.ROOM_PARTY, BookingBO.ROOM_GYM, BookingBO.ROOM_SMALL_REC};
 
     public static void main(String[] args) {
@@ -73,20 +73,32 @@ public class Menu {
      * @since 27/9/2026
      */
     public static void addBooking(List<Booking> reservations){
-        Scanner sc = new Scanner(System.in);
         Booking res = new Booking();
         res.setId(bookingID(reservations));
 
         res.setRoomType(resRoomType());
-        res.setBookingDate(MenuOptions.getString("Date of Booking (yyyy mm dd): "));
-        res.setStartTime(MenuOptions.getString("Enter the Start Time (hh:mm): "));
-        res.setEndTime(MenuOptions.getString("Enter the End Time (hh:mm): "));
+        res.setBookingDate(MenuOptions.getValidString("Date of Booking (yyyy-mm-dd): ",
+                input -> BookingValidationBO.isValidBookingDate(input, LocalDate.now()),
+                "Enter a real date in yyyy-mm-dd format that is today or later!"));
+        res.setStartTime(MenuOptions.getValidString("Enter the Start Time (hh:mm): ",
+                BookingValidationBO::isValidTime,
+                "Enter a time in 24 hour hh:mm format, for example 14:30!"));
+        String startTime = res.getStartTime();
+        res.setEndTime(MenuOptions.getValidString("Enter the End Time (hh:mm): ",
+                input -> BookingValidationBO.isEndAfterStart(startTime, input),
+                "Enter a time in hh:mm format that is after " + startTime + "!"));
         res.setGroupNum(MenuOptions.getInt("Enter the Number of People Attending: "));
-        res.setBookingName(MenuOptions.getString("Enter the Booking's Name: "));
-        res.setPhone(MenuOptions.getString("Enter the Primary Booker's Phone Number: "));
-        res.setEmail(MenuOptions.getString("Enter the Primary Booker's Email: "));
-        res.setEquipmentNeeded(MenuOptions.getBool("Are you Booking Equipment?: "));
-        res.setBirthday(MenuOptions.getBool("Is this a Birthday party? (y/n): "));
+        res.setBookingName(MenuOptions.getValidString("Enter the Booking's Name: ",
+                BookingValidationBO::isNotBlank,
+                "A booking name is required!"));
+        res.setPhone(MenuOptions.getValidString("Enter the Primary Booker's Phone Number: ",
+                BookingValidationBO::isValidPhone,
+                "Enter a 10 digit phone number, for example 902-555-1234!"));
+        res.setEmail(MenuOptions.getValidString("Enter the Primary Booker's Email: ",
+                BookingValidationBO::isValidEmail,
+                "Enter an email address, for example name@example.com!"));
+        res.setEquipmentNeeded(MenuOptions.getBool("Are you Booking Equipment?"));
+        res.setBirthday(MenuOptions.getBool("Is this a Birthday party?"));
 
         BookingBO.calculate(res);
         reservations.add(res);
@@ -125,27 +137,13 @@ public class Menu {
      * @since 27/9/2026
      */
     private static String resRoomType(){
-        Scanner sc = new Scanner(System.in);
-        boolean valid = false;
-        int selectedRoom=0;
-
         IO.println("Room Types:");
         for(int i = 0; i < ROOM_TYPES.length; ++i){
             IO.println((i+1) + ": " + ROOM_TYPES[i]);
         }
 
-        do {
-            IO.println("Make a selection (ex: 1): ");
-            int choice = sc.nextInt();
-
-            if(choice < 0 || choice > ROOM_TYPES.length){
-                IO.println("Choice must be a previously listed number!");
-            } else{
-                valid = true;
-                selectedRoom = choice - 1;
-            }
-        } while (!valid);
-        return ROOM_TYPES[selectedRoom];
+        int choice = MenuOptions.getInt("Make a selection (ex: 1): ", 1, ROOM_TYPES.length);
+        return ROOM_TYPES[choice - 1];
     }
 
     /**
