@@ -6,6 +6,7 @@ import ca.hccis.cis2232.a2.data.Booking;
  * Business logic for Sport and Rec Rentals bookings.
  *
  * @author Alexander Fendyur
+ * @author Claude (AI)
  * @since 2/10/2026
  */
 public class BookingBO {
@@ -41,6 +42,7 @@ public class BookingBO {
      * @return the total cost including tax
      * @throws IllegalArgumentException if the booking is null or its room type is unknown
      * @author Alexander Fendyur
+     * @author Claude (AI)
      * @since 2/10/2026
      */
     public static double calculate(Booking booking) {
@@ -72,6 +74,7 @@ public class BookingBO {
      * @return the base price of the room
      * @throws IllegalArgumentException if the room type is unknown
      * @author Alexander Fendyur
+     * @author Claude (AI)
      * @since 2/10/2026
      */
     private static double getRoomPrice(String roomType) {
