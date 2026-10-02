@@ -1,9 +1,9 @@
-package ca.hccis.cis2232.a1;
+package ca.hccis.cis2232.a2;
 
-import ca.hccis.cis2232.a1.bo.BookingBO;
-import ca.hccis.cis2232.a1.data.Booking;
-import ca.hccis.cis2232.a1.util.BookingDataOptions;
-import ca.hccis.cis2232.a1.util.MenuOptions;
+import ca.hccis.cis2232.a2.bo.BookingBO;
+import ca.hccis.cis2232.a2.data.Booking;
+import ca.hccis.cis2232.a2.util.BookingDataOptions;
+import ca.hccis.cis2232.a2.util.MenuOptions;
 
 import java.util.List;
 import java.util.Scanner;

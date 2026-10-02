@@ -1,4 +1,4 @@
-package ca.hccis.cis2232.a1.data;
+package ca.hccis.cis2232.a2.data;
 
 /*
  * Room booking.

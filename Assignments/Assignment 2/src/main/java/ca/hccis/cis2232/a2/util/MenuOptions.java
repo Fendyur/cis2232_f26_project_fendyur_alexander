@@ -1,4 +1,4 @@
-package ca.hccis.cis2232.a1.util;
+package ca.hccis.cis2232.a2.util;
 
 import java.util.Scanner;
 

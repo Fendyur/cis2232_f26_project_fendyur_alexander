@@ -1,6 +1,6 @@
-package ca.hccis.cis2232.a1.bo;
+package ca.hccis.cis2232.a2.bo;
 
-import ca.hccis.cis2232.a1.data.Booking;
+import ca.hccis.cis2232.a2.data.Booking;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

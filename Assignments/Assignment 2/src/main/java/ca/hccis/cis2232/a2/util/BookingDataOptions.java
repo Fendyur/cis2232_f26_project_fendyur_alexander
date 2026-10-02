@@ -1,6 +1,6 @@
-package ca.hccis.cis2232.a1.util;
+package ca.hccis.cis2232.a2.util;
 
-import ca.hccis.cis2232.a1.data.Booking;
+import ca.hccis.cis2232.a2.data.Booking;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
