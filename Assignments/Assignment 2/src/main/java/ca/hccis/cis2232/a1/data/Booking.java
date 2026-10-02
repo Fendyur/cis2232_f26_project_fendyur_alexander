@@ -22,27 +22,7 @@ public class Booking {
     private double totalPrice;
     private double birthdayCost;
 
-    public static final double TAX = 1.15;
-
     public Booking(){}
-
-    /*
-     * Utilities for writing to and from the JSON file.
-     *
-     * Alexander Fendyur
-     * 27/9/2026
-     */
-    public void priceCalc(){
-        double subTotal = 0.0;
-
-        if (isBirthday){
-            subTotal = birthdayCost;
-        }
-
-        subTotal += basePrice;
-
-        totalPrice = subTotal * TAX;
-    }
 
     /*
      * Getters and setters

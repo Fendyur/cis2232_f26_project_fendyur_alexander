@@ -1,5 +1,6 @@
 package ca.hccis.cis2232.a1;
 
+import ca.hccis.cis2232.a1.bo.BookingBO;
 import ca.hccis.cis2232.a1.data.Booking;
 import ca.hccis.cis2232.a1.util.BookingDataOptions;
 import ca.hccis.cis2232.a1.util.MenuOptions;
@@ -16,8 +17,7 @@ import java.util.Scanner;
  */
 public class Menu {
     Scanner input = new Scanner(System.in);
-    private static final String[] ROOM_TYPES = {"Party Room", "Gym", "Small Rec Room"};
-    private static final double[] ROOM_COSTS = {200, 150, 100};
+    private static final String[] ROOM_TYPES = {BookingBO.ROOM_PARTY, BookingBO.ROOM_GYM, BookingBO.ROOM_SMALL_REC};
 
     public static void main(String[] args) {
         IO.println("Welcome to the Sport and Rec Reservation app!");
@@ -88,7 +88,7 @@ public class Menu {
         res.setEquipmentNeeded(MenuOptions.getBool("Are you Booking Equipment?: "));
         res.setBirthday(MenuOptions.getBool("Is this a Birthday party? (y/n): "));
 
-        res.priceCalc();
+        BookingBO.calculate(res);
         reservations.add(res);
 
         try{
