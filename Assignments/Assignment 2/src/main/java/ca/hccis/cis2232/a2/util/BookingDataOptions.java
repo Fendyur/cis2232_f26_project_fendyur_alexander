@@ -15,12 +15,12 @@ import java.lang.reflect.Type;
 import java.io.Reader;
 import java.io.Writer;
 
-/*
+/**
 * Utilities for writing to and from the JSON file.
 *
-* Alexander Fendyur
-* Claude
-* 27/9/2026
+* @author Alexander Fendyur
+* @author Claude
+* @since 27/9/2026
 */
 public class BookingDataOptions {
     public static final String DIR = "c:\\cis2232";
@@ -30,23 +30,23 @@ public class BookingDataOptions {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final Type BOOKING_LIST_TYPE = new TypeToken<List<Booking>>() {}.getType();
 
-    /*
+    /**
      * Ensures the desired directory exists, and creates it if it doesn't.
      *
-     * Alexander Fendyur
-     * Claude
-     * 27/9/2026
+     * @author Alexander Fendyur
+     * @author Claude
+     * @since 27/9/2026
      */
     public static void ensureDir() throws Exception{
         Files.createDirectories(FILE_PATH.getParent());
     }
 
-    /*
+    /**
      * Loads bookings from the JSON file, or creates a new list if they don't exist.
      *
-     * Alexander Fendyur
-     * Claude
-     * 27/9/2026
+     * @author Alexander Fendyur
+     * @author Claude
+     * @since 27/9/2026
      */
     public static List<Booking> load() throws Exception{
         if(!Files.exists(FILE_PATH)){
@@ -58,12 +58,12 @@ public class BookingDataOptions {
         }
     }
 
-    /*
+    /**
      * Saves all bookings to the JSON file, replacing any preexisting ones.
      *
-     * Alexander Fendyur
-     * Claude
-     * 27/9/2026
+     * @author Alexander Fendyur
+     * @author Claude
+     * @since 27/9/2026
      */
     public static void save(List<Booking>bookings) throws Exception{
         ensureDir();

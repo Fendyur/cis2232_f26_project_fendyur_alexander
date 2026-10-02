@@ -9,11 +9,11 @@ import java.util.List;
 import java.util.Scanner;
 
 
-/*
+/**
  * An app to book rooms at a Sport and Rec facility
  *
- * Alexander Fendyur
- * 27/9/2026
+ * @author Alexander Fendyur
+ * @since 27/9/2026
  */
 public class Menu {
     Scanner input = new Scanner(System.in);
@@ -25,12 +25,12 @@ public class Menu {
 
         List<Booking> reservations;
 
-        /*
+        /**
          * Searches for the desired directory and creates it in needed.
          * In case of a related error, warns user and prints said error.
          *
-         * Alexander Fendyur
-         * 27/9/2026
+         * @author Alexander Fendyur
+         * @since 27/9/2026
          */
         try{
             BookingDataOptions.ensureDir();
@@ -66,11 +66,11 @@ public class Menu {
         } while (!selection.equals("x"));
     }
 
-    /*
+    /**
      * Adds a booking to the existing list.
      *
-     * Alexander Fendyur
-     * 27/9/2026
+     * @author Alexander Fendyur
+     * @since 27/9/2026
      */
     public static void addBooking(List<Booking> reservations){
         Scanner sc = new Scanner(System.in);
@@ -101,11 +101,11 @@ public class Menu {
         }
     }
 
-    /*
+    /**
      * Retrieves previous bookings.
      *
-     * Alexander Fendyur
-     * 27/9/2026
+     * @author Alexander Fendyur
+     * @since 27/9/2026
      */
     public static void viewBookings(List<Booking> reservations){
         if(reservations.isEmpty()){
@@ -118,11 +118,11 @@ public class Menu {
         }
     }
 
-    /*
+    /**
      * Lets user set the reservation room's type.
      *
-     * Alexander Fendyur
-     * 27/9/2026
+     * @author Alexander Fendyur
+     * @since 27/9/2026
      */
     private static String resRoomType(){
         Scanner sc = new Scanner(System.in);
@@ -148,11 +148,11 @@ public class Menu {
         return ROOM_TYPES[selectedRoom];
     }
 
-    /*
+    /**
      * Create the next booking ID
      *
-     * Alexander Fendyur
-     * 27/9/2026
+     * @author Alexander Fendyur
+     * @since 27/9/2026
      */
     private static int bookingID(List<Booking> reservations){
         int max=0;

@@ -1,10 +1,10 @@
 package ca.hccis.cis2232.a2.data;
 
-/*
+/**
  * Room booking.
  *
- * Alexander Fendyur
- * 27/9/2026
+ * @author Alexander Fendyur
+ * @since 27/9/2026
  */
 public class Booking {
     private int id;
@@ -24,11 +24,11 @@ public class Booking {
 
     public Booking(){}
 
-    /*
+    /**
      * Getters and setters
      *
-     * Alexander Fendyur
-     * 27/9/2026
+     * @author Alexander Fendyur
+     * @since 27/9/2026
      */
     public int getId() {
         return id;
@@ -142,11 +142,11 @@ public class Booking {
         this.birthdayCost = birthdayCost;
     }
 
-    /*
+    /**
      * toString generator.
      *
-     * Alexander Fendyur
-     * 27/9/2026
+     * @author Alexander Fendyur
+     * @since 27/9/2026
      */
     @Override
     public String toString(){

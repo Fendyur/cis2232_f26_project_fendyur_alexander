@@ -2,20 +2,20 @@ package ca.hccis.cis2232.a2.util;
 
 import java.util.Scanner;
 
-/*
+/**
 * Methods to help the Menu prompt for validated inputs
 *
-* Alexander Fendyur
-* 27/9/2026
+* @author Alexander Fendyur
+* @since 27/9/2026
 */
 public class MenuOptions {
     private static Scanner sc = new Scanner(System.in);
 
-    /*
+    /**
      * Prompts for a string type input
      *
-     * Alexander Fendyur
-     * 27/9/2026
+     * @author Alexander Fendyur
+     * @since 27/9/2026
      */
     public static String getString(String prompt){
         boolean valid = false;
@@ -31,11 +31,11 @@ public class MenuOptions {
         return input;
     }
 
-    /*
+    /**
      * Prompts for an int type input
      *
-     * Alexander Fendyur
-     * 27/9/2026
+     * @author Alexander Fendyur
+     * @since 27/9/2026
      */
     public static int getInt(String prompt){
         boolean valid = false;
@@ -54,11 +54,11 @@ public class MenuOptions {
         return value;
     }
 
-    /*
+    /**
      * Prompts for a double type input
      *
-     * Alexander Fendyur
-     * 27/9/2026
+     * @author Alexander Fendyur
+     * @since 27/9/2026
      */
     public static double getDouble(String prompt){
         boolean valid = false;
@@ -74,11 +74,11 @@ public class MenuOptions {
         return input;
     }
 
-    /*
+    /**
      * Prompts for a string type input, returns a boolean type value
      *
-     * Alexander Fendyur
-     * 27/9/2026
+     * @author Alexander Fendyur
+     * @since 27/9/2026
      */
     public static boolean getBool(String prompt){
         boolean valid = false;
