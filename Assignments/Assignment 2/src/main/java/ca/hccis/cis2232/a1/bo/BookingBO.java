@@ -17,11 +17,16 @@ public class BookingBO {
      * @return the total cost including tax
      */
     public static double calculate(Booking booking) {
+        if (booking == null) {
+            throw new IllegalArgumentException("Booking is required");
+        }
         double basePrice;
-        if (booking.getRoomType().equals("Party Room")) {
+        if ("Party Room".equals(booking.getRoomType())) {
             basePrice = 200;
-        } else {
+        } else if ("Gym".equals(booking.getRoomType())) {
             basePrice = 150;
+        } else {
+            throw new IllegalArgumentException("Unknown room type: " + booking.getRoomType());
         }
         booking.setBasePrice(basePrice);
 
