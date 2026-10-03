@@ -33,6 +33,7 @@ public class BookingDataOptions {
     /**
      * Ensures the desired directory exists, and creates it if it doesn't.
      *
+     * @throws Exception if the directory cannot be created
      * @author Alexander Fendyur
      * @author Claude
      * @since 27/9/2026
@@ -44,16 +45,22 @@ public class BookingDataOptions {
     /**
      * Loads bookings from the JSON file, or creates a new list if they don't exist.
      *
+     * @return the saved bookings, or an empty list if there are none
+     * @throws Exception if the file exists but cannot be read
      * @author Alexander Fendyur
      * @author Claude
      * @since 27/9/2026
+     *
+     * @modifiedby Claude (AI) 2026-10-03 Renamed the Reader variable from read to reader.
      */
     public static List<Booking> load() throws Exception{
+        //No file yet means no bookings have been saved
         if(!Files.exists(FILE_PATH)){
             return new ArrayList<>();
         }
-        try(Reader read = Files.newBufferedReader(FILE_PATH, StandardCharsets.UTF_8)){
-            List<Booking> bookings = GSON.fromJson(read, BOOKING_LIST_TYPE);
+        try(Reader reader = Files.newBufferedReader(FILE_PATH, StandardCharsets.UTF_8)){
+            List<Booking> bookings = GSON.fromJson(reader, BOOKING_LIST_TYPE);
+            //An empty file reads as null, so return an empty list instead
             return bookings != null ? bookings : new ArrayList<>();
         }
     }
@@ -61,14 +68,18 @@ public class BookingDataOptions {
     /**
      * Saves all bookings to the JSON file, replacing any preexisting ones.
      *
+     * @param bookings the bookings to save
+     * @throws Exception if the file cannot be written
      * @author Alexander Fendyur
      * @author Claude
      * @since 27/9/2026
+     *
+     * @modifiedby Claude (AI) 2026-10-03 Renamed the Writer variable from write to writer.
      */
     public static void save(List<Booking>bookings) throws Exception{
         ensureDir();
-        try(Writer write = Files.newBufferedWriter(FILE_PATH, StandardCharsets.UTF_8)){
-            GSON.toJson(bookings, BOOKING_LIST_TYPE, write);
+        try(Writer writer = Files.newBufferedWriter(FILE_PATH, StandardCharsets.UTF_8)){
+            GSON.toJson(bookings, BOOKING_LIST_TYPE, writer);
         }
     }
 

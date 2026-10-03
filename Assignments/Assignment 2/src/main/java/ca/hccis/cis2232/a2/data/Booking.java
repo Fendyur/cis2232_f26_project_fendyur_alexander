@@ -5,6 +5,9 @@ package ca.hccis.cis2232.a2.data;
  *
  * @author Alexander Fendyur
  * @since 27/9/2026
+ *
+ * @modifiedby Claude (AI) 2026-10-02 Removed priceCalc() and the TAX constant; the
+ * price is now calculated by BookingBO.calculate.
  */
 public class Booking {
     private int id;

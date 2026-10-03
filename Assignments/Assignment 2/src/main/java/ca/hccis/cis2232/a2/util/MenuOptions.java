@@ -10,6 +10,9 @@ import java.util.function.Predicate;
 * @author Alexander Fendyur
 * @author Claude (AI)
 * @since 27/9/2026
+*
+* @modifiedby Claude (AI) 2026-10-02 Added getValidString and a ranged getInt, and fixed
+* the prompts so they re-ask until the input is valid.
 */
 public class MenuOptions {
     private static Scanner sc = new Scanner(System.in);
@@ -21,8 +24,11 @@ public class MenuOptions {
      * @return the trimmed value entered
      * @author Alexander Fendyur
      * @since 27/9/2026
+     *
+     * @modifiedby Claude (AI) 2026-10-02 Fixed the loop so it re-prompts on blank input.
      */
     public static String getString(String prompt){
+        //Claude (AI) 2026-10-02 Reuse getValidString; the old while(valid) loop never re-prompted
         return getValidString(prompt, input -> !input.isEmpty(), "A value is required!");
     }
 
@@ -39,6 +45,7 @@ public class MenuOptions {
      */
     public static String getValidString(String prompt, Predicate<String> isValid, String errorMessage){
         while(true){
+            //Ask until the trimmed input passes the check
             IO.println(prompt);
             String input = sc.nextLine().trim();
             if(isValid.test(input)){
@@ -55,8 +62,11 @@ public class MenuOptions {
      * @return the value entered
      * @author Alexander Fendyur
      * @since 27/9/2026
+     *
+     * @modifiedby Claude (AI) 2026-10-02 Fixed the loop so it re-prompts on invalid input.
      */
     public static int getInt(String prompt){
+        //Claude (AI) 2026-10-02 Reuse the ranged getInt; the old while(valid) loop never re-prompted
         return getInt(prompt, 1, Integer.MAX_VALUE);
     }
 
@@ -98,8 +108,12 @@ public class MenuOptions {
      * @return the value entered
      * @author Alexander Fendyur
      * @since 27/9/2026
+     *
+     * @modifiedby Claude (AI) 2026-10-02 Reads a whole line instead of nextInt() and
+     * re-prompts on invalid input.
      */
     public static double getDouble(String prompt){
+        //Claude (AI) 2026-10-02 Read the line and parse it as a double, re-prompting until valid
         while(true){
             IO.println(prompt);
             String input = sc.nextLine().trim();
@@ -122,8 +136,11 @@ public class MenuOptions {
      * @return true for y, false for n
      * @author Alexander Fendyur
      * @since 27/9/2026
+     *
+     * @modifiedby Claude (AI) 2026-10-02 Simplified the loop and trimmed the input.
      */
     public static boolean getBool(String prompt){
+        //Claude (AI) 2026-10-02 Return as soon as y or n is entered, otherwise ask again
         while(true){
             IO.println(prompt + " (y/n): ");
             String input = sc.nextLine().trim().toLowerCase();

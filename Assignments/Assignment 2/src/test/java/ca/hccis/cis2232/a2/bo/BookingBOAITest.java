@@ -26,6 +26,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author Claude (AI generated)
  * @author Alexander Fendyur (reviewer)
  * @since 2/10/2026
+ *
+ * @modifiedby Claude (AI) 2026-10-03 Renamed test methods to lowerCamelCase and added a
+ * javadoc to each test, per the CIS Programming Standards.
  */
 class BookingBOAITest {
 
@@ -38,6 +41,8 @@ class BookingBOAITest {
      * @param birthday  whether it is a birthday booking
      * @param equipment whether equipment is rented
      * @return the new booking
+     * @author Claude (AI generated)
+     * @since 2/10/2026
      */
     private static Booking booking(String roomType, boolean birthday, boolean equipment) {
         Booking booking = new Booking();
@@ -47,6 +52,15 @@ class BookingBOAITest {
         return booking;
     }
 
+    /**
+     * Each room type is priced from its base price plus tax.
+     *
+     * @param roomType the room type name to test
+     * @param expectedTotal the expected total including tax
+     * @author Claude (AI generated)
+     * @author Alexander Fendyur (reviewer)
+     * @since 2/10/2026
+     */
     @ParameterizedTest(name = "{0} with no extras costs {1}")
     @CsvSource({
             "Party Room,     230.00",
@@ -54,10 +68,20 @@ class BookingBOAITest {
             "Small Rec Room, 115.00"
     })
     @DisplayName("Each room type is priced from its base price plus tax")
-    void calculate_eachRoomType_noExtras(String roomType, double expectedTotal) {
+    void calculateEachRoomTypeNoExtras(String roomType, double expectedTotal) {
         assertEquals(expectedTotal, BookingBO.calculate(booking(roomType, false, false)), DELTA);
     }
 
+    /**
+     * Every combination of birthday and equipment add-ons.
+     *
+     * @param birthday whether it is a birthday booking
+     * @param equipment whether equipment is rented
+     * @param expectedTotal the expected total including tax
+     * @author Claude (AI generated)
+     * @author Alexander Fendyur (reviewer)
+     * @since 2/10/2026
+     */
     @ParameterizedTest(name = "birthday={0}, equipment={1} costs {2}")
     @CsvSource({
             "false, false, 115.00",
@@ -66,14 +90,21 @@ class BookingBOAITest {
             "true,  true,  201.25"
     })
     @DisplayName("Every combination of birthday and equipment add-ons")
-    void calculate_addOnCombinations_smallRecRoom(boolean birthday, boolean equipment, double expectedTotal) {
+    void calculateAddOnCombinationsSmallRecRoom(boolean birthday, boolean equipment, double expectedTotal) {
         assertEquals(expectedTotal,
                 BookingBO.calculate(booking("Small Rec Room", birthday, equipment)), DELTA);
     }
 
+    /**
+     * The total is the subtotal with exactly 15% tax applied.
+     *
+     * @author Claude (AI generated)
+     * @author Alexander Fendyur (reviewer)
+     * @since 2/10/2026
+     */
     @Test
     @DisplayName("The total is the subtotal with exactly 15% tax applied")
-    void calculate_appliesFifteenPercentTax() {
+    void calculateAppliesFifteenPercentTax() {
         Booking booking = booking("Gym", true, true);
         double subTotal = BookingBO.PRICE_GYM + BookingBO.BIRTHDAY_COST + BookingBO.EQUIPMENT_COST;
 
@@ -82,9 +113,16 @@ class BookingBOAITest {
         assertEquals(subTotal * 0.15, total - subTotal, DELTA);
     }
 
+    /**
+     * Base price, birthday cost and total are stored on the booking.
+     *
+     * @author Claude (AI generated)
+     * @author Alexander Fendyur (reviewer)
+     * @since 2/10/2026
+     */
     @Test
     @DisplayName("Base price, birthday cost and total are stored on the booking")
-    void calculate_storesPricesOnBooking() {
+    void calculateStoresPricesOnBooking() {
         Booking booking = booking("Party Room", true, false);
 
         double total = BookingBO.calculate(booking);
@@ -96,9 +134,16 @@ class BookingBOAITest {
         );
     }
 
+    /**
+     * A non-birthday booking has no birthday cost.
+     *
+     * @author Claude (AI generated)
+     * @author Alexander Fendyur (reviewer)
+     * @since 2/10/2026
+     */
     @Test
     @DisplayName("A non-birthday booking has no birthday cost")
-    void calculate_notBirthday_birthdayCostIsZero() {
+    void calculateNotBirthdayBirthdayCostIsZero() {
         Booking booking = booking("Party Room", false, true);
 
         BookingBO.calculate(booking);
@@ -106,9 +151,16 @@ class BookingBOAITest {
         assertEquals(0.0, booking.getBirthdayCost(), DELTA);
     }
 
+    /**
+     * Recalculating after removing the birthday clears the stale birthday cost.
+     *
+     * @author Claude (AI generated)
+     * @author Alexander Fendyur (reviewer)
+     * @since 2/10/2026
+     */
     @Test
     @DisplayName("Recalculating after removing the birthday clears the stale birthday cost")
-    void calculate_recalculateAfterChange_updatesBooking() {
+    void calculateRecalculateAfterChangeUpdatesBooking() {
         Booking booking = booking("Gym", true, false);
         BookingBO.calculate(booking);
 
@@ -119,9 +171,16 @@ class BookingBOAITest {
         assertEquals(0.0, booking.getBirthdayCost(), DELTA);
     }
 
+    /**
+     * Calculating twice gives the same result.
+     *
+     * @author Claude (AI generated)
+     * @author Alexander Fendyur (reviewer)
+     * @since 2/10/2026
+     */
     @Test
     @DisplayName("Calculating twice gives the same result")
-    void calculate_isRepeatable() {
+    void calculateIsRepeatable() {
         Booking booking = booking("Party Room", true, true);
 
         double first = BookingBO.calculate(booking);
@@ -130,9 +189,16 @@ class BookingBOAITest {
         assertEquals(first, second, DELTA);
     }
 
+    /**
+     * Add-ons always make the booking cost more.
+     *
+     * @author Claude (AI generated)
+     * @author Alexander Fendyur (reviewer)
+     * @since 2/10/2026
+     */
     @Test
     @DisplayName("Add-ons always make the booking cost more")
-    void calculate_addOnsIncreaseTotal() {
+    void calculateAddOnsIncreaseTotal() {
         double plain = BookingBO.calculate(booking("Gym", false, false));
         double withExtras = BookingBO.calculate(booking("Gym", true, true));
 
@@ -140,25 +206,48 @@ class BookingBOAITest {
         assertFalse(plain > withExtras);
     }
 
+    /**
+     * Room type matching ignores case and surrounding spaces.
+     *
+     * @param roomType the room type name to test
+     * @author Claude (AI generated)
+     * @author Alexander Fendyur (reviewer)
+     * @since 2/10/2026
+     */
     @ParameterizedTest
     @ValueSource(strings = {"gym", "PARTY ROOM", "  Small Rec Room  "})
     @DisplayName("Room type matching ignores case and surrounding spaces")
-    void calculate_roomTypeIsLenient(String roomType) {
+    void calculateRoomTypeIsLenient(String roomType) {
         assertDoesNotThrow(() -> BookingBO.calculate(booking(roomType, false, false)));
     }
 
+    /**
+     * Missing or unknown room types are rejected.
+     *
+     * @param roomType the room type name to test
+     * @author Claude (AI generated)
+     * @author Alexander Fendyur (reviewer)
+     * @since 2/10/2026
+     */
     @ParameterizedTest
     @NullAndEmptySource
     @ValueSource(strings = {"Hot Tub", "   "})
     @DisplayName("Missing or unknown room types are rejected")
-    void calculate_invalidRoomType_throws(String roomType) {
+    void calculateInvalidRoomTypeThrows(String roomType) {
         assertThrows(IllegalArgumentException.class,
                 () -> BookingBO.calculate(booking(roomType, false, false)));
     }
 
+    /**
+     * A null booking is rejected.
+     *
+     * @author Claude (AI generated)
+     * @author Alexander Fendyur (reviewer)
+     * @since 2/10/2026
+     */
     @Test
     @DisplayName("A null booking is rejected")
-    void calculate_nullBooking_throws() {
+    void calculateNullBookingThrows() {
         IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
                 () -> BookingBO.calculate(null));
         assertNotNull(e.getMessage());

@@ -8,16 +8,22 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- *A series of tests to check app functionality
+ * A series of tests to check app functionality
  *
  * @author Alexander Fendyur
- * @since 2/10/2027
+ * @since 2/10/2026
+ *
+ * @modifiedby Claude (AI) 2026-10-03 Renamed the class to match its file name, corrected
+ * the @since year and added @author/@since to each test javadoc.
  */
-class BookingBOTest{
+class BookingBOManualTest{
     private static final double DELTA = 0.01;
 
     /**
      * Party Room + equipment costs, with tax added onto the final cost.
+     *
+     * @author Alexander Fendyur
+     * @since 2/10/2026
      */
     @Test
     void calcPartyRoomEquipmentPlusTax(){
@@ -34,6 +40,9 @@ class BookingBOTest{
      * The gym rat special!
      * Gym + Birthday costs + equipment costs, with tax added on to the final cost.
      * Compares against the base price of a Gym rental to ensure extras and taxes increase the total cost.
+     *
+     * @author Alexander Fendyur
+     * @since 2/10/2026
      */
     @Test
     void calcGymEquipmentBirthdayPlusTax(){
@@ -51,6 +60,9 @@ class BookingBOTest{
 
     /**
      * Ensuring an error is thrown when no room type is selected.
+     *
+     * @author Alexander Fendyur
+     * @since 2/10/2026
      */
     @Test
     void noRoomType(){

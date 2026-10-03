@@ -15,22 +15,31 @@ import java.util.List;
  *
  * @author Alexander Fendyur
  * @since 27/9/2026
+ *
+ * @modifiedby Claude (AI) 2026-10-02 Room types now come from BookingBO; removed the
+ * unused ROOM_COSTS array and Scanner field.
  */
 public class Menu {
+    //Claude (AI) 2026-10-02 Use the room names defined in BookingBO so prices and names stay in one place
     private static final String[] ROOM_TYPES = {BookingBO.ROOM_PARTY, BookingBO.ROOM_GYM, BookingBO.ROOM_SMALL_REC};
 
+    /**
+     * Starts the app: loads saved bookings, then shows the main menu until
+     * the user chooses to exit.
+     *
+     * @param args command line arguments (not used)
+     * @author Alexander Fendyur
+     * @since 27/9/2026
+     */
     public static void main(String[] args) {
         IO.println("Welcome to the Sport and Rec Reservation app!");
         IO.println("");
 
         List<Booking> reservations;
 
-        /**
+        /*
          * Searches for the desired directory and creates it in needed.
          * In case of a related error, warns user and prints said error.
-         *
-         * @author Alexander Fendyur
-         * @since 27/9/2026
          */
         try{
             BookingDataOptions.ensureDir();
@@ -41,6 +50,7 @@ public class Menu {
             return;
         }
 
+        //Show the menu and run the chosen option until the user exits
         String selection;
         do {
             IO.println("A) Add");
@@ -69,46 +79,54 @@ public class Menu {
     /**
      * Adds a booking to the existing list.
      *
+     * @param reservations the bookings loaded so far; the new booking is added to it
      * @author Alexander Fendyur
      * @since 27/9/2026
+     *
+     * @modifiedby Claude (AI) 2026-10-02 Each input is now validated and re-prompted
+     * until valid, and the total is calculated with BookingBO.
      */
     public static void addBooking(List<Booking> reservations){
-        Booking res = new Booking();
-        res.setId(bookingID(reservations));
+        Booking reservation = new Booking();
+        reservation.setId(getNextBookingId(reservations));
 
-        res.setRoomType(resRoomType());
-        res.setBookingDate(MenuOptions.getValidString("Date of Booking (yyyy-mm-dd): ",
+        //Claude (AI) 2026-10-02 Prompt for each booking detail, re-prompting until the input is valid
+        reservation.setRoomType(promptRoomType());
+        reservation.setBookingDate(MenuOptions.getValidString("Date of Booking (yyyy-mm-dd): ",
                 input -> BookingValidationBO.isValidBookingDate(input, LocalDate.now()),
                 "Enter a real date in yyyy-mm-dd format that is today or later!"));
-        res.setStartTime(MenuOptions.getValidString("Enter the Start Time (hh:mm): ",
+        reservation.setStartTime(MenuOptions.getValidString("Enter the Start Time (hh:mm): ",
                 BookingValidationBO::isValidTime,
                 "Enter a time in 24 hour hh:mm format, for example 14:30!"));
-        String startTime = res.getStartTime();
-        res.setEndTime(MenuOptions.getValidString("Enter the End Time (hh:mm): ",
+        //The end time is checked against the start time entered above
+        String startTime = reservation.getStartTime();
+        reservation.setEndTime(MenuOptions.getValidString("Enter the End Time (hh:mm): ",
                 input -> BookingValidationBO.isEndAfterStart(startTime, input),
                 "Enter a time in hh:mm format that is after " + startTime + "!"));
-        res.setGroupNum(MenuOptions.getInt("Enter the Number of People Attending: "));
-        res.setBookingName(MenuOptions.getValidString("Enter the Booking's Name: ",
+        reservation.setGroupNum(MenuOptions.getInt("Enter the Number of People Attending: "));
+        reservation.setBookingName(MenuOptions.getValidString("Enter the Booking's Name: ",
                 BookingValidationBO::isNotBlank,
                 "A booking name is required!"));
-        res.setPhone(MenuOptions.getValidString("Enter the Primary Booker's Phone Number: ",
+        reservation.setPhone(MenuOptions.getValidString("Enter the Primary Booker's Phone Number: ",
                 BookingValidationBO::isValidPhone,
                 "Enter a 10 digit phone number, for example 902-555-1234!"));
-        res.setEmail(MenuOptions.getValidString("Enter the Primary Booker's Email: ",
+        reservation.setEmail(MenuOptions.getValidString("Enter the Primary Booker's Email: ",
                 BookingValidationBO::isValidEmail,
                 "Enter an email address, for example name@example.com!"));
-        res.setEquipmentNeeded(MenuOptions.getBool("Are you Booking Equipment?"));
-        res.setBirthday(MenuOptions.getBool("Is this a Birthday party?"));
+        reservation.setEquipmentNeeded(MenuOptions.getBool("Are you Booking Equipment?"));
+        reservation.setBirthday(MenuOptions.getBool("Is this a Birthday party?"));
 
-        BookingBO.calculate(res);
-        reservations.add(res);
+        //Claude (AI) 2026-10-02 Price the booking with the business object instead of Booking.priceCalc()
+        BookingBO.calculate(reservation);
+        reservations.add(reservation);
 
+        //Save all bookings; if saving fails, undo the add so memory matches the file
         try{
             BookingDataOptions.save(reservations);
             IO.println("");
             IO.println("Reservation Saved.");
         } catch(Exception e){
-            reservations.remove(res);
+            reservations.remove(reservation);
             IO.println("Error Saving Reservation: " + e.getMessage());
         }
     }
@@ -116,6 +134,7 @@ public class Menu {
     /**
      * Retrieves previous bookings.
      *
+     * @param reservations the bookings to display
      * @author Alexander Fendyur
      * @since 27/9/2026
      */
@@ -133,15 +152,21 @@ public class Menu {
     /**
      * Lets user set the reservation room's type.
      *
+     * @return the name of the room type chosen
      * @author Alexander Fendyur
      * @since 27/9/2026
+     *
+     * @modifiedby Claude (AI) 2026-10-02 Uses MenuOptions.getInt with a 1 to 3 range so 0
+     * and non-numbers are rejected; renamed from resRoomType to a verb.
      */
-    private static String resRoomType(){
+    private static String promptRoomType(){
+        //List the room types, numbered from 1
         IO.println("Room Types:");
         for(int i = 0; i < ROOM_TYPES.length; ++i){
             IO.println((i+1) + ": " + ROOM_TYPES[i]);
         }
 
+        //Claude (AI) 2026-10-02 Only accept a number that matches a listed room
         int choice = MenuOptions.getInt("Make a selection (ex: 1): ", 1, ROOM_TYPES.length);
         return ROOM_TYPES[choice - 1];
     }
@@ -149,10 +174,14 @@ public class Menu {
     /**
      * Create the next booking ID
      *
+     * @param reservations the existing bookings
+     * @return one more than the highest booking ID in use
      * @author Alexander Fendyur
      * @since 27/9/2026
+     *
+     * @modifiedby Claude (AI) 2026-10-03 Renamed from bookingID to a verb.
      */
-    private static int bookingID(List<Booking> reservations){
+    private static int getNextBookingId(List<Booking> reservations){
         int max=0;
         for(Booking booking: reservations){
             max = Math.max(max, booking.getId());
