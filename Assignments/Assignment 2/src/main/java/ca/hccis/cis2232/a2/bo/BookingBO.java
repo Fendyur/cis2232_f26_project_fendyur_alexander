@@ -8,6 +8,8 @@ import ca.hccis.cis2232.a2.data.Booking;
  * @author Alexander Fendyur
  * @author Claude (AI)
  * @since 2/10/2026
+ *
+ * @modifiedby Claude (AI) 2026-10-03 Added inline comments describing the calculation.
  */
 public class BookingBO {
 
@@ -46,13 +48,16 @@ public class BookingBO {
      * @since 2/10/2026
      */
     public static double calculate(Booking booking) {
+        //A booking is needed to have anything to price
         if (booking == null) {
             throw new IllegalArgumentException("Booking is required");
         }
 
+        //Start from the room's base price and record it on the booking
         double basePrice = getRoomPrice(booking.getRoomType());
         booking.setBasePrice(basePrice);
 
+        //Add the birthday cost (decorations and cake) only for birthday bookings
         double birthdayCost = booking.isBirthday() ? BIRTHDAY_COST : 0.0;
         booking.setBirthdayCost(birthdayCost);
 
@@ -61,6 +66,7 @@ public class BookingBO {
             subTotal += EQUIPMENT_COST;
         }
 
+        //Apply tax to the subtotal and record the total on the booking
         double total = subTotal * (1 + TAX_RATE);
         booking.setTotalPrice(total);
         return total;
@@ -78,6 +84,7 @@ public class BookingBO {
      * @since 2/10/2026
      */
     private static double getRoomPrice(String roomType) {
+        //Treat a missing room type as blank, and ignore case and surrounding spaces
         String room = roomType == null ? "" : roomType.trim();
         if (ROOM_PARTY.equalsIgnoreCase(room)) {
             return PRICE_PARTY_ROOM;
