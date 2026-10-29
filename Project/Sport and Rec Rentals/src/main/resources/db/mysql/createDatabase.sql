@@ -43,6 +43,27 @@ VALUES
 (6,  FALSE, FALSE, 'Small Rec Room', '2026-10-08', '10:00', '12:00', 'Book Club',     '902-555-9876', 'books@example.com',       60.00,  9.00,  69.00,  0.00),
 (15, TRUE,  TRUE,  'Gym',            '2026-10-10', '14:00', '17:00', 'Sam Lee',       '902-555-2468', 'sam.lee@example.com',    200.00, 41.25, 316.25, 75.00);
 
+# Claude (AI) 2026-10-29 Added sample bookings for testing the monthly room bookings report.
+# October 2026 (with the rows above) has 12 bookings over 8 of the 12 room/add-on variations;
+# Party Room + Equipment, Gym + Birthday, Small Rec Room + Equipment and
+# Small Rec Room + Equipment + Birthday have 0 bookings. September and November 2026 rows
+# check that other months are not counted (2026-11-01 is right after the end of October).
+INSERT INTO booking
+(groupNum, isBirthday, equipmentNeeded, roomType, bookingDate, startTime, endTime,
+ bookingName, phone, email, basePrice, tax, totalPrice, birthdayCost)
+VALUES
+(18, TRUE,  FALSE, 'Party Room',     '2026-10-12', '12:00', '15:00', 'Maria Chen',    '902-555-1111', 'maria.chen@example.com', 150.00, 33.75, 258.75, 75.00),
+(25, TRUE,  TRUE,  'Party Room',     '2026-10-14', '15:00', '18:00', 'Liam Walsh',    '902-555-2222', 'liam.walsh@example.com', 150.00, 33.75, 258.75, 75.00),
+(30, FALSE, FALSE, 'Party Room',     '2026-10-17', '19:00', '22:00', 'Staff Social',  '902-555-3333', 'social@example.com',     150.00, 22.50, 172.50,  0.00),
+(16, FALSE, TRUE,  'Gym',            '2026-10-19', '17:00', '19:00', 'Island Hoops',  '902-555-4444', 'hoops@example.com',      200.00, 30.00, 230.00,  0.00),
+(22, FALSE, TRUE,  'Gym',            '2026-10-24', '09:00', '11:00', 'Rovers Hockey', '902-555-4321', 'coach@rovers.example',   200.00, 30.00, 230.00,  0.00),
+(10, FALSE, FALSE, 'Gym',            '2026-10-26', '20:00', '21:00', 'Pickup Soccer', '902-555-5555', 'pickup@example.com',     200.00, 30.00, 230.00,  0.00),
+(8,  FALSE, FALSE, 'Small Rec Room', '2026-10-28', '18:00', '20:00', 'Chess Club',    '902-555-6666', 'chess@example.com',       60.00,  9.00,  69.00,  0.00),
+(9,  TRUE,  FALSE, 'Small Rec Room', '2026-10-31', '13:00', '15:00', 'Ava Brown',     '902-555-7777', 'ava.brown@example.com',   60.00, 20.25, 155.25, 75.00),
+(14, FALSE, TRUE,  'Gym',            '2026-09-30', '18:00', '20:00', 'Island Hoops',  '902-555-4444', 'hoops@example.com',      200.00, 30.00, 230.00,  0.00),
+(20, TRUE,  FALSE, 'Party Room',     '2026-11-01', '13:00', '16:00', 'Noah Gallant',  '902-555-8888', 'noah.g@example.com',     150.00, 33.75, 258.75, 75.00),
+(6,  FALSE, TRUE,  'Small Rec Room', '2026-11-07', '10:00', '12:00', 'Yoga Group',    '902-555-9999', 'yoga@example.com',        60.00,  9.00,  69.00,  0.00);
+
 # ALTER TABLE SkillsAssessmentSquashTechnical
 #     ADD PRIMARY KEY (id);
 # ALTER TABLE SkillsAssessmentSquashTechnical
