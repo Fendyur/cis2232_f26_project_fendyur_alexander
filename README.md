@@ -63,3 +63,28 @@ birthdayCost:	(double)	Birthday cost
 
 ### Calculation
 When a user enters a new booking, the application will calculate the total cost of the booking. The entry will be analyzed to check whether equipment rental is needed and whether the booking is marked as a birthday, and the corresponding costs will be added to the base room price. The final total cost will be added to the row of the database.
+
+### Report
+**Name:** Monthly Room Bookings
+
+**Purpose:** Show how many times each room was booked in a month, split by the add-ons that were booked with the room.
+
+**Inputs**
+- Year (yyyy, 2000-2100)
+- Month (1-12)
+- The day is ignored. Every booking whose booking date is in the entered year and month is included.
+- Invalid or missing input is shown as an error message on the input form.
+
+**Displayed results**
+- A table and a horizontal bar chart of the number of bookings for each of the 12 variations: 3 rooms (Party Room, Gym, Small Rec Room) x 4 options (Room only, Room + Equipment, Room + Birthday decorations, Room + Equipment + Birthday decorations).
+- The total number of bookings for the month.
+- By default, variations with 0 bookings are hidden. A "Show variations with no bookings" checkbox shows all 12 variations in both the table and the chart.
+- If there are no bookings in the month, the message "No bookings found for that month" is shown.
+- The location of the saved report file (or an error if it could not be written).
+
+**File output**
+- Folder: `c:\cis2232\` (created if it does not exist)
+- File name: report type + current date/time (`yyyyMMddHHmm`, 24 hour clock), for example `MonthlyRoomBookings202610291537.txt`
+- Content: report title, the year/month, generated date/time, all 12 variations with their booking counts (zero rows included) and the total.
+
+**Access:** Reports menu > Monthly Room Bookings, or `/report/booking/monthly`.
