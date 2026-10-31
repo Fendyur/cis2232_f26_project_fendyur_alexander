@@ -33,6 +33,9 @@
                            th:text="#{label.report.athlete.assessor.report}">Name report-placeholder</a>
                         <a th:href="@{/report/squash/score}" class="accent navbar-item"
                            th:text="#{label.report.score.range}">Score range report-placeholder</a>
+                        <!-- Claude (AI) 2026-10-29 Added monthly room bookings report -->
+                        <a th:href="@{/report/booking/monthly}" class="accent navbar-item"
+                           th:text="#{label.report.monthly.room.bookings}">Monthly Room Bookings</a>
                     </div>
                 </div>
                 <div class="navbar-end">

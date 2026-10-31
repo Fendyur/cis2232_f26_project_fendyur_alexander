@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<!--
+    Monthly Room Bookings report view. Shows the year/month input form and, after
+    submitting, a table and chart of the 12 room/add-on variations.
+    Variations with 0 bookings are hidden by default; the checkbox shows them.
+    @author Alexander Fendyur
+    @author Claude (AI)
+    @since 29/10/2026
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head">
+    <title id="pageTitle">Report</title>
+</head>
+<body>
+<style scoped="scoped">
+    .report-form label {
+        display: inline-block;
+        width: 70px;
+        margin-right: 8px
+    }
+
+    .report-form input[type=number] {
+        width: 120px
+    }
+
+    .cd {
+        color: #F00 !important;
+        font-weight: bold
+    }
+
+    .report-table td, .report-table th {
+        padding: 2px 24px 2px 0 !important;
+        text-align: left
+    }
+
+    .report-table td.count, .report-table th.count {
+        text-align: right;
+        padding-right: 0 !important
+    }
+
+    .report-table tfoot td {
+        font-weight: bold;
+        border-top: 2px solid #4682B4
+    }
+
+    .report-section {
+        margin-top: 24px
+    }
+
+    /* White panel so the chart bars and labels contrast with the page colour */
+    .chart-container {
+        position: relative;
+        max-width: 760px;
+        height: 420px;
+        margin: 16px auto;
+        padding: 16px;
+        background-color: #FFF;
+        border-radius: 12px
+    }
+</style>
+<nav th:replace="fragments/navHeader :: navbar"></nav>
+
+<div class="container has-text-centered">
+    <h2 class="title is-2" th:text="#{label.report.monthly.room.bookings}">Monthly Room Bookings</h2>
+
+    <!-- Input: year and month (the day is ignored) -->
+    <form th:action="@{/report/booking/monthly/submit}" th:object="${reportInput}" method="post"
+          class="wbb report-form" style="display:inline-block;text-align:left!important">
+        <label for="year" th:text="#{label.report.year}">Year</label>
+        <input id="year" type="number" min="2000" max="2100" placeholder="yyyy" th:field="*{year}"/>
+        <p class="cd" th:if="${#fields.hasErrors('year')}" th:errors="*{year}">Year error</p>
+        <br/>
+        <label for="month" th:text="#{label.report.month}">Month</label>
+        <input id="month" type="number" min="1" max="12" placeholder="1-12" th:field="*{month}"/>
+        <p class="cd" th:if="${#fields.hasErrors('month')}" th:errors="*{month}">Month error</p>
+        <br/>
+        <button style="display:block;margin-top:24px!important" class="centered" th:text="#{label.submit}">Submit</button>
+    </form>
+
+    <p class="cd" th:if="${not #strings.isEmpty(errorMessage)}" th:text="${errorMessage}">Database error</p>
+
+    <!-- Output: results for the year/month -->
+    <div class="report-section" th:if="${reportInput.roomBookingVariations != null}">
+        <h3 class="title is-4" th:text="${reportPeriod}">October 2026</h3>
+
+        <p th:if="${not #strings.isEmpty(message)}" th:text="${message}">No bookings found for that month</p>
+
+        <p>
+            <label class="checkbox">
+                <input type="checkbox" id="showZeroVariations"/>
+                <span th:text="#{label.report.show.zero.variations}">Show variations with no bookings</span>
+            </label>
+        </p>
+
+        <table class="wbb centered report-table" id="monthlyRoomBookingsTable">
+            <thead>
+            <tr>
+                <th>Room</th>
+                <th>Variation</th>
+                <th class="count">Bookings</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Each row carries its count so the toggle and chart can read it -->
+            <tr th:each="variation : ${reportInput.roomBookingVariations}"
+                th:class="${variation.bookingCount == 0} ? 'variation-row zero-variation' : 'variation-row'"
+                th:style="${variation.bookingCount == 0} ? 'display:none' : ''"
+                th:attr="data-label=${variation.variationName},data-room=${variation.roomType},data-count=${variation.bookingCount}">
+                <td th:text="${variation.roomType}">Gym</td>
+                <td th:text="${variation.optionDescription}">Room only</td>
+                <td class="count" th:text="${variation.bookingCount}">0</td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td>Total</td>
+                <td></td>
+                <td class="count" th:text="${reportInput.totalBookings}">0</td>
+            </tr>
+            </tfoot>
+        </table>
+
+        <div class="chart-container" id="chartContainer">
+            <canvas id="monthlyRoomBookingsChart"></canvas>
+        </div>
+        <p id="chartMessage" style="display:none">No variations to chart.</p>
+
+        <!-- Report file location (or error) -->
+        <p th:if="${not #strings.isEmpty(reportInput.reportFilePath)}">
+            Report saved to: <code th:text="${reportInput.reportFilePath}">c:\cis2232\MonthlyRoomBookings202610291537.txt</code>
+        </p>
+        <p class="cd" th:if="${not #strings.isEmpty(fileErrorMessage)}" th:text="${fileErrorMessage}">File error</p>
+    </div>
+</div>
+
+<script th:if="${reportInput.roomBookingVariations != null}">
+    //Colours for each room type (steel blue is the project base colour)
+    const ROOM_COLOURS = {
+        'Party Room': '#4682B4',
+        'Gym': '#E07B39',
+        'Small Rec Room': '#3BA272'
+    };
+
+    const showZeroCheckbox = document.getElementById('showZeroVariations');
+    const variationRows = document.querySelectorAll('#monthlyRoomBookingsTable tr.variation-row');
+    let monthlyRoomBookingsChart = null;
+
+    /**
+     * Show or hide the zero rows in the table based on the checkbox and
+     * return the rows that are visible (input for the chart).
+     */
+    function applyZeroVariationToggle() {
+        const showZero = showZeroCheckbox.checked;
+        const visibleRows = [];
+        variationRows.forEach(function (row) {
+            const isZero = Number(row.dataset.count) === 0;
+            const isVisible = showZero || !isZero;
+            row.style.display = isVisible ? '' : 'none';
+            if (isVisible) {
+                visibleRows.push(row);
+            }
+        });
+        return visibleRows;
+    }
+
+    /**
+     * Draw (or redraw) the chart from the visible table rows so the table and
+     * the chart always show the same variations.
+     */
+    function updateChart(visibleRows) {
+        const chartContainer = document.getElementById('chartContainer');
+        const chartMessage = document.getElementById('chartMessage');
+
+        //Nothing to chart (e.g. no bookings and zeros hidden)
+        if (visibleRows.length === 0 || typeof Chart === 'undefined') {
+            chartContainer.style.display = 'none';
+            chartMessage.style.display = '';
+            return;
+        }
+        chartContainer.style.display = '';
+        chartMessage.style.display = 'none';
+
+        const labels = visibleRows.map(row => row.dataset.label);
+        const counts = visibleRows.map(row => Number(row.dataset.count));
+        const colours = visibleRows.map(row => ROOM_COLOURS[row.dataset.room] || '#888888');
+
+        if (monthlyRoomBookingsChart === null) {
+            monthlyRoomBookingsChart = new Chart(document.getElementById('monthlyRoomBookingsChart'), {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{label: 'Bookings', data: counts, backgroundColor: colours, borderWidth: 1}]
+                },
+                options: {
+                    indexAxis: 'y',
+                    maintainAspectRatio: false,
+                    plugins: {legend: {display: false}},
+                    color: '#333333',
+                    scales: {x: {beginAtZero: true, ticks: {precision: 0}}}
+                }
+            });
+        } else {
+            monthlyRoomBookingsChart.data.labels = labels;
+            monthlyRoomBookingsChart.data.datasets[0].data = counts;
+            monthlyRoomBookingsChart.data.datasets[0].backgroundColor = colours;
+            monthlyRoomBookingsChart.update();
+        }
+    }
+
+    //Checkbox change updates both the table and the chart
+    showZeroCheckbox.addEventListener('change', function () {
+        updateChart(applyZeroVariationToggle());
+    });
+
+    //Initial view: zero variations hidden
+    updateChart(applyZeroVariationToggle());
+</script>
+
+<br/>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+</body>
+</html>

@@ -37,6 +37,11 @@
                     <td><a th:href="@{/report/squash/score}"th:text="#{label.report.score.range}" >Placeholder report 2</a></td>
                     <td></td>
                 </tr><!-- comment -->
+                <!-- Claude (AI) 2026-10-29 Added monthly room bookings report -->
+                <tr>
+                    <td><a th:href="@{/report/booking/monthly}" th:text="#{label.report.monthly.room.bookings}" >Monthly Room Bookings</a></td>
+                    <td></td>
+                </tr>
             </table>
         </div>
         <footer th:replace="fragments/footer :: footer"></footer>
