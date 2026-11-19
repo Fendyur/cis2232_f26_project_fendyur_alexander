@@ -88,3 +88,32 @@ When a user enters a new booking, the application will calculate the total cost 
 - Content: report title, the year/month, generated date/time, all 12 variations with their booking counts (zero rows included) and the total.
 
 **Access:** Reports menu > Monthly Room Bookings, or `/report/booking/monthly`.
+
+<!-- Claude (AI) 2026-11-19 Added the booking CRUD section (sprint 3) -->
+### Booking CRUD (Sprint 3)
+Spring MVC crud for the `booking` table using Spring Data JPA and Spring Validation.
+
+**Access:** Bookings menu > List / Add, or `/booking`.
+
+| Action  | URL                          | Notes |
+|---------|------------------------------|-------|
+| List    | `GET /booking`               | All bookings sorted by date and start time, with Details, Edit and Delete for each row |
+| Add     | `GET /booking/add`           | Form for the room, date, start/end time, group size, name, phone, email and the equipment/birthday add-ons |
+| Edit    | `GET /booking/edit/{id}`     | Same form filled in with the booking |
+| Save    | `POST /booking/submit`       | Validates, calculates the prices, saves and shows the details page |
+| Details | `GET /booking/details/{id}`  | Saved booking with the base price, birthday cost, tax and total |
+| Delete  | `POST /booking/delete/{id}`  | The user confirms first, then goes back to the list with a message |
+
+**Price calculation** (done when the booking is added or edited; prices are not entered)
+- Base price by room: Party Room $150.00, Gym $200.00, Small Rec Room $60.00
+- Birthday (decorations and cake): $75.00
+- Equipment: included with the room (no extra cost)
+- Tax: 15% of (base price + birthday cost)
+- Total: base price + birthday cost + tax (tax and total rounded to the cent)
+
+**Validation**
+- Required: room type, booking date, start time, end time, group size, booking name, phone and email.
+- Room type must be Party Room, Gym or Small Rec Room. Group size 1-200.
+- Formats: date `yyyy-mm-dd`, times `hh:mm` (24 hour), phone 10 digits (e.g. `902-555-1234`), valid email.
+- The booking date must be a real date. A new booking must be for today or later; an existing booking can be edited with any date.
+- The end time must be after the start time.
