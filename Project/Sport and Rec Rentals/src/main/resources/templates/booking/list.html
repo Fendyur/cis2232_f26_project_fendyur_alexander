@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<!--
+    Booking list view. Shows all bookings sorted by date and start time with
+    Details, Edit and Delete actions for each row and a button to add a booking.
+    Delete is a POST and asks the user to confirm first.
+    @author Alexander Fendyur
+    @author Claude (AI)
+    @since 19/11/2026
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head">
+    <title id="pageTitle">Bookings</title>
+</head>
+<body>
+<style scoped="scoped">
+    .booking-table {
+        border-collapse: collapse
+    }
+
+    .booking-table th, .booking-table td {
+        padding: 4px 8px !important;
+        text-align: left;
+        vertical-align: middle
+    }
+
+    .booking-table td.amount, .booking-table th.amount {
+        text-align: right
+    }
+
+    .booking-table td.flag, .booking-table th.flag {
+        text-align: center
+    }
+
+    .booking-actions a, .booking-actions button {
+        margin: 0 2px !important
+    }
+
+    .booking-actions form {
+        display: inline
+    }
+
+    .booking-message {
+        font-weight: bold;
+        margin-bottom: 12px
+    }
+</style>
+<nav th:replace="fragments/navHeader :: navbar"></nav>
+
+<div class="container has-text-centered">
+    <h2 class="title is-2" th:text="#{label.booking.list}">Bookings</h2>
+
+    <!-- Messages from the controller (after add/edit/delete) -->
+    <p class="booking-message error" th:if="${not #strings.isEmpty(messageError)}" th:text="${messageError}">Error message</p>
+    <p class="booking-message success" th:if="${not #strings.isEmpty(messageSuccess)}" th:text="${messageSuccess}">Success message</p>
+
+    <p>
+        <a th:href="@{/booking/add}" href="/booking/add" class="button is-success" id="addBookingButton">
+            <i class="fas fa-plus"></i>&nbsp;<span th:text="#{label.booking.add}">Add Booking</span>
+        </a>
+    </p>
+    <br/>
+
+    <table id="bookingTable" class="wbb booking-table">
+        <thead>
+        <tr>
+            <th class="amount">ID</th>
+            <th>Booking Name</th>
+            <th>Room</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th class="amount">Group Size</th>
+            <th class="flag">Equipment</th>
+            <th class="flag">Birthday</th>
+            <th class="amount">Total</th>
+            <th class="flag">Options</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="current : ${bookings}">
+            <td class="amount" th:text="${current.id}">1</td>
+            <td th:text="${current.bookingName}">Jane Doe</td>
+            <td th:text="${current.roomType}">Party Room</td>
+            <td th:text="${current.bookingDate}">2026-10-03</td>
+            <td th:text="${current.startTime} + ' - ' + ${current.endTime}">13:00 - 16:00</td>
+            <td class="amount" th:text="${current.groupNum}">12</td>
+            <td class="flag" th:text="${current.equipmentNeeded} ? 'Yes' : 'No'">No</td>
+            <td class="flag" th:text="${current.birthday} ? 'Yes' : 'No'">Yes</td>
+            <td class="amount" th:text="'$' + ${#numbers.formatDecimal(current.totalPrice, 1, 'COMMA', 2, 'POINT')}">$258.75</td>
+            <td class="flag booking-actions">
+                <a th:href="@{/booking/details/{id}(id=${current.id})}" class="button is-small is-info" title="Details">Details</a>
+                <a th:href="@{/booking/edit/{id}(id=${current.id})}" class="button is-small is-link" title="Edit">Edit</a>
+                <!-- Delete is a POST; the user confirms first (name/date come from the data attributes) -->
+                <form th:action="@{/booking/delete/{id}(id=${current.id})}" method="post"
+                      th:data-booking-name="${current.bookingName}" th:data-booking-date="${current.bookingDate}"
+                      onsubmit="return confirm('Delete the booking for ' + this.dataset.bookingName + ' on ' + this.dataset.bookingDate + '?');">
+                    <button type="submit" class="button is-small is-danger" title="Delete">Delete</button>
+                </form>
+            </td>
+        </tr>
+
+        <!-- Message when there are no bookings -->
+        <tr th:if="${#lists.isEmpty(bookings)}">
+            <td colspan="10" class="flag">No bookings found.</td>
+        </tr>
+        </tbody>
+    </table>
+    <br/><br/>
+</div>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+</body>
+</html>

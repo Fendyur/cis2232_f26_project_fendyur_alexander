@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<!--
+    Booking details / confirmation view. Shown after a booking is added or
+    edited (and from the list) with the saved values and the calculated base
+    price, birthday cost, tax and total.
+    @author Alexander Fendyur
+    @author Claude (AI)
+    @since 19/11/2026
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head">
+    <title id="pageTitle">Booking Details</title>
+</head>
+<body>
+<style scoped="scoped">
+    .details-table th, .details-table td {
+        padding: 3px 24px 3px 0 !important;
+        vertical-align: middle;
+        text-align: left
+    }
+
+    .details-table td.money, .details-table th.money {
+        text-align: right;
+        padding-right: 0 !important
+    }
+
+    .details-table tr.total td, .details-table tr.total th {
+        font-weight: bold;
+        border-top: 2px solid #4682B4
+    }
+
+    .details-section {
+        margin-top: 16px
+    }
+
+    .booking-message {
+        font-weight: bold;
+        margin-bottom: 12px
+    }
+
+    .details-links a {
+        margin: 0 6px
+    }
+</style>
+<nav th:replace="fragments/navHeader :: navbar"></nav>
+
+<div class="container has-text-centered">
+    <h2 class="title is-2" th:text="#{label.booking.details} + ' #' + ${booking.id}">Booking Details</h2>
+
+    <p class="booking-message success" th:if="${not #strings.isEmpty(messageSuccess)}" th:text="${messageSuccess}" id="messageSuccess">Booking added</p>
+
+    <!-- Booking information entered by the user -->
+    <table class="wbb details-table" id="bookingDetails">
+        <tbody>
+        <tr><th>Booking Name</th><td th:text="${booking.bookingName}">Jane Doe</td></tr>
+        <tr><th>Room Type</th><td th:text="${booking.roomType}">Party Room</td></tr>
+        <tr><th>Booking Date</th><td th:text="${booking.bookingDate}">2026-10-03</td></tr>
+        <tr><th>Time</th><td th:text="${booking.startTime} + ' - ' + ${booking.endTime}">13:00 - 16:00</td></tr>
+        <tr><th>Group Size</th><td th:text="${booking.groupNum}">12</td></tr>
+        <tr><th>Phone</th><td th:text="${booking.phone}">902-555-1234</td></tr>
+        <tr><th>Email</th><td th:text="${booking.email}">jane.doe@example.com</td></tr>
+        <tr><th>Equipment Needed</th><td th:text="${booking.equipmentNeeded} ? 'Yes (included)' : 'No'">No</td></tr>
+        <tr><th>Birthday</th><td th:text="${booking.birthday} ? 'Yes' : 'No'">Yes</td></tr>
+        </tbody>
+    </table>
+
+    <!-- Calculated prices -->
+    <div class="details-section">
+        <h3 class="title is-4" th:text="#{label.booking.price.details}">Price Details</h3>
+        <table class="wbb details-table" id="bookingPrices">
+            <tbody>
+            <tr>
+                <th>Base Price (room)</th>
+                <td class="money" id="basePrice" th:text="'$' + ${#numbers.formatDecimal(booking.basePrice, 1, 'COMMA', 2, 'POINT')}">$150.00</td>
+            </tr>
+            <tr>
+                <th>Birthday Cost</th>
+                <td class="money" id="birthdayCost" th:text="'$' + ${#numbers.formatDecimal(booking.birthdayCost, 1, 'COMMA', 2, 'POINT')}">$75.00</td>
+            </tr>
+            <tr>
+                <th>Tax (15%)</th>
+                <td class="money" id="tax" th:text="'$' + ${#numbers.formatDecimal(booking.tax, 1, 'COMMA', 2, 'POINT')}">$33.75</td>
+            </tr>
+            <tr class="total">
+                <th>Total Price</th>
+                <td class="money" id="totalPrice" th:text="'$' + ${#numbers.formatDecimal(booking.totalPrice, 1, 'COMMA', 2, 'POINT')}">$258.75</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <p class="details-section details-links">
+        <a th:href="@{/booking/edit/{id}(id=${booking.id})}" class="button is-link" th:text="#{label.booking.edit}">Edit Booking</a>
+        <a th:href="@{/booking}" class="button is-light" th:text="#{label.booking.back.to.list}">Back to the booking list</a>
+        <a th:href="@{/booking/add}" class="button is-success" th:text="#{label.booking.add}">Add Booking</a>
+    </p>
+    <br/>
+</div>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+</body>
+</html>

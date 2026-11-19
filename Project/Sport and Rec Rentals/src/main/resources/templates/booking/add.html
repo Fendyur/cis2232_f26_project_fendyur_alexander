@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<!--
+    Booking add/edit view. Used for a new booking (no id) and to edit an
+    existing booking (hidden id). Errors from Spring Validation and the business
+    validation are shown under each field. Prices are not entered, they are
+    calculated when the form is submitted.
+    @author Alexander Fendyur
+    @author Claude (AI)
+    @since 19/11/2026
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head">
+    <title id="pageTitle">Add/Edit Booking</title>
+</head>
+<body>
+<style scoped="scoped">
+    .booking-form label.field-label {
+        display: inline-block;
+        width: 130px;
+        margin-right: 8px;
+        font-weight: bold
+    }
+
+    .booking-form input[type=text], .booking-form input[type=email], .booking-form input[type=tel] {
+        width: 260px
+    }
+
+    .booking-form input[type=number] {
+        width: 100px
+    }
+
+    .booking-form p {
+        margin-top: 8px
+    }
+
+    .booking-form .cd {
+        margin: 2px 0 0 138px;
+        font-weight: bold;
+        white-space: normal
+    }
+
+    .booking-note {
+        margin: 12px 0 0 0;
+        font-style: italic
+    }
+</style>
+<nav th:replace="fragments/navHeader :: navbar"></nav>
+
+<div class="container has-text-centered">
+    <h2 class="title is-2" th:if="${booking.id != null}" th:text="#{label.booking.edit} + ' #' + ${booking.id}">Edit Booking</h2>
+    <h2 class="title is-2" th:if="${booking.id == null}" th:text="#{label.booking.add}">Add Booking</h2>
+
+    <p class="cd" th:if="${#fields.hasErrors('${booking.*}')}" id="formErrorSummary"
+       th:text="#{label.booking.fix.errors}">Please fix the errors below.</p>
+
+    <!-- novalidate: the server side Spring Validation shows the messages -->
+    <form th:action="@{/booking/submit}" th:object="${booking}" method="post" novalidate="novalidate"
+          class="wbb booking-form" id="bookingForm" style="display:inline-block;text-align:left!important">
+
+        <!-- Hidden ID field (set when editing) -->
+        <input type="hidden" th:field="*{id}"/>
+
+        <p>
+            <label class="field-label" for="roomType">Room Type:</label>
+            <select th:field="*{roomType}" id="roomType">
+                <option value="">-- Select a room --</option>
+                <option th:each="currentRoomType : ${roomTypes}" th:value="${currentRoomType}"
+                        th:text="${currentRoomType}">Party Room</option>
+            </select>
+        </p>
+        <p class="cd" th:if="${#fields.hasErrors('roomType')}" th:errors="*{roomType}">Room type error</p>
+
+        <p>
+            <label class="field-label" for="bookingDate">Booking Date:</label>
+            <input type="date" th:field="*{bookingDate}" id="bookingDate" placeholder="yyyy-mm-dd"/>
+        </p>
+        <p class="cd" th:if="${#fields.hasErrors('bookingDate')}" th:errors="*{bookingDate}">Date error</p>
+
+        <p>
+            <label class="field-label" for="startTime">Start Time:</label>
+            <input type="time" th:field="*{startTime}" id="startTime" placeholder="hh:mm"/>
+        </p>
+        <p class="cd" th:if="${#fields.hasErrors('startTime')}" th:errors="*{startTime}">Start time error</p>
+
+        <p>
+            <label class="field-label" for="endTime">End Time:</label>
+            <input type="time" th:field="*{endTime}" id="endTime" placeholder="hh:mm"/>
+        </p>
+        <p class="cd" th:if="${#fields.hasErrors('endTime')}" th:errors="*{endTime}">End time error</p>
+
+        <p>
+            <label class="field-label" for="groupNum">Group Size:</label>
+            <input type="number" th:field="*{groupNum}" id="groupNum" min="1"/>
+        </p>
+        <p class="cd" th:if="${#fields.hasErrors('groupNum')}" th:errors="*{groupNum}">Group size error</p>
+
+        <p>
+            <label class="field-label" for="bookingName">Booking Name:</label>
+            <input type="text" th:field="*{bookingName}" id="bookingName" maxlength="100"/>
+        </p>
+        <p class="cd" th:if="${#fields.hasErrors('bookingName')}" th:errors="*{bookingName}">Name error</p>
+
+        <p>
+            <label class="field-label" for="phone">Phone:</label>
+            <input type="tel" th:field="*{phone}" id="phone" maxlength="20" placeholder="902-555-1234"/>
+        </p>
+        <p class="cd" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}">Phone error</p>
+
+        <p>
+            <label class="field-label" for="email">Email:</label>
+            <input type="email" th:field="*{email}" id="email" maxlength="100" placeholder="name@example.com"/>
+        </p>
+        <p class="cd" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Email error</p>
+
+        <p>
+            <label class="field-label">Add-ons:</label>
+            <label class="checkbox">
+                <input type="checkbox" th:field="*{equipmentNeeded}"/> Equipment needed
+            </label>
+            &nbsp;&nbsp;
+            <label class="checkbox">
+                <input type="checkbox" th:field="*{birthday}"/> Birthday (decorations and cake)
+            </label>
+        </p>
+
+        <p class="booking-note" th:text="#{label.booking.price.note}">Prices are calculated when you submit.</p>
+
+        <!-- Submit button -->
+        <button type="submit" style="display:block;margin-top:24px!important" class="centered button is-link"
+                th:text="#{label.submit}">Submit</button>
+        <p class="centered2">
+            <a th:href="@{/booking}" th:text="#{label.booking.back.to.list}">Back to the booking list</a>
+        </p>
+    </form>
+    <br/><br/>
+</div>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+</body>
+</html>
